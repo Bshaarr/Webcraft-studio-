@@ -1,0 +1,1 @@
+// src/components/SidebarRight.tsx placeholder

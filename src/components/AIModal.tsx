@@ -1,0 +1,1 @@
+// src/components/AIModal.tsx placeholder

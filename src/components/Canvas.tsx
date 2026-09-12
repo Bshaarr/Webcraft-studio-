@@ -1,0 +1,1 @@
+// src/components/Canvas.tsx placeholder

@@ -1,0 +1,1 @@
+// src/engine/eventRunner.ts placeholder

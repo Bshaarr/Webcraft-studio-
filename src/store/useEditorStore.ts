@@ -1,0 +1,1 @@
+// src/store/useEditorStore.ts placeholder
