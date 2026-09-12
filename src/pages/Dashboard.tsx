@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useEditorStore } from '../store/useEditorStore';
-import { Plus, Folder, Trash2, Copy } from 'lucide-react';
+import { Plus, Folder, Trash2, Copy, Phone, Mail, Facebook, Code } from 'lucide-react';
 
 export const Dashboard: React.FC<{ onOpenEditor: () => void }> = ({ onOpenEditor }) => {
   const { projects, createProject, selectProject, deleteProject, duplicateProject } = useEditorStore();
@@ -20,12 +20,14 @@ export const Dashboard: React.FC<{ onOpenEditor: () => void }> = ({ onOpenEditor
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-slate-950 text-white p-8 flex flex-col justify-between">
+      <div className="max-w-5xl mx-auto w-full">
         <header className="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
           <div>
-            <h1 className="text-2xl font-bold text-sky-400">WebCraft Studio</h1>
-            <p className="text-slate-400 text-sm">إدارة المشاريع والتصاميم</p>
+            <h1 className="text-3xl font-bold text-sky-400 flex items-center gap-2">
+              <Code size={28} /> WebCraft Studio
+            </h1>
+            <p className="text-slate-400 text-sm mt-1">منصة بناء وتصميم واجهات المواقع بدون كود</p>
           </div>
         </header>
 
@@ -57,9 +59,7 @@ export const Dashboard: React.FC<{ onOpenEditor: () => void }> = ({ onOpenEditor
                 <Folder className="text-sky-400" size={24} />
                 <h3 className="font-semibold text-lg truncate">{proj.name}</h3>
               </div>
-              <p className="text-xs text-slate-500 mb-4">
-                تاريخ التعديل: {proj.updatedAt || 'اليوم'}
-              </p>
+              <p className="text-xs text-slate-500 mb-4">تاريخ التعديل: {proj.updatedAt || 'اليوم'}</p>
               <div className="flex items-center justify-between pt-3 border-t border-slate-800/60">
                 <button
                   onClick={() => handleOpen(proj.id)}
@@ -88,6 +88,30 @@ export const Dashboard: React.FC<{ onOpenEditor: () => void }> = ({ onOpenEditor
           ))}
         </div>
       </div>
+
+      {/* بطاقة المطور بشار عنيزان */}
+      <footer className="max-w-5xl mx-auto w-full mt-12 pt-6 border-t border-slate-800/80 text-center text-slate-400 text-xs">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+          <div>
+            <p className="text-slate-200 font-semibold text-sm">تم تطوير المنصة بواسطة المهندس <span className="text-sky-400">بشار عنيزان</span></p>
+            <p className="text-slate-500 mt-0.5">مطور تطبيقات ومهندس حلول برمجية</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-4 text-slate-300">
+            <a href="tel:0930971491" className="flex items-center gap-1.5 hover:text-sky-400 transition bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+              <Phone size={14} className="text-sky-400" />
+              <span>0930971491</span>
+            </a>
+            <a href="mailto:bsharabomorad0@gmail.com" className="flex items-center gap-1.5 hover:text-sky-400 transition bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+              <Mail size={14} className="text-sky-400" />
+              <span>bsharabomorad0@gmail.com</span>
+            </a>
+            <a href="https://www.facebook.com/share/1BRkWgTJ1T/" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-sky-400 transition bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+              <Facebook size={14} className="text-sky-400" />
+              <span>Facebook</span>
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
