@@ -131,7 +131,8 @@ export const useEditorStore = create<EditorState>()(
       setActiveLeftTab: (tab) => set({ activeLeftTab: tab }),
       setIsPreviewMode: (status) => set({ isPreviewMode: status }),
 
-      addComponent: (parentId, type) => {
+      addComponent: (_parentId, type) => {
+
         set((state) => {
           if (!state.currentProject) return state;
           const newComp: ComponentData = {
