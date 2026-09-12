@@ -1,13 +1,15 @@
-export type ComponentType = 
-  | 'container' | 'section' | 'row' | 'column' | 'card'
-  | 'heading' | 'paragraph' | 'button' | 'image' | 'link'
-  | 'input' | 'textarea' | 'select' | 'form'
-  | 'navbar' | 'footer' | 'hero';
+export type ComponentType = 'heading' | 'paragraph' | 'button' | 'input' | 'hero' | 'container';
+
+export type ViewMode = 'desktop' | 'tablet' | 'mobile';
+
+export type ActiveTab = 'visual' | 'code' | 'layers' | 'components' | 'styles';
+
+export type ActiveLeftTab = 'components' | 'layers' | 'templates';
 
 export interface VisualEvent {
   id: string;
-  trigger: 'onClick' | 'onHover' | 'onSubmit';
-  action: 'showAlert' | 'openUrl' | 'toggleElement' | 'addClass';
+  trigger: 'click' | 'hover';
+  action: 'showAlert' | 'openUrl' | 'navigate';
   payload: string;
 }
 
@@ -15,29 +17,21 @@ export interface ComponentData {
   id: string;
   type: ComponentType;
   name: string;
-  children: ComponentData[];
-  content?: string;
   styles: Record<string, string>;
   attributes: Record<string, string>;
   events: VisualEvent[];
+  children: ComponentData[];
+  content?: string;
 }
 
-export interface ProjectPage {
+export interface PageData {
   id: string;
   name: string;
-  slug: string;
   components: ComponentData[];
 }
 
-export interface Project {
+export interface ProjectData {
   id: string;
   name: string;
-  updatedAt: string;
-  pages: ProjectPage[];
-  customCSS?: string;
-  customJS?: string;
+  pages: PageData[];
 }
-
-export type ViewMode = 'desktop' | 'tablet' | 'mobile';
-export type ActiveTab = 'components' | 'layers' | 'settings';
-export type BottomTab = 'visual' | 'code' | 'console';
