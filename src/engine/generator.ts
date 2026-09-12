@@ -1,63 +1,52 @@
-import { ComponentData } from '../types';
+import { ComponentData, PageData, ProjectData } from '../types';
 
-export const generateHTML = (components: ComponentData[]): string => {
-  return components.map(c => renderComponentToHTML(c)).join('\n');
-};
+export const generateComponentHTML = (comp: ComponentData): string => {
+  const styles = Object.entries(comp.styles || {})
+    .map(([k, v]) => `${k.replace(/([A-Z])/g, '-$1').toLowerCase()}:${v}`)
+    .join(';');
 
-const renderComponentToHTML = (comp: ComponentData): string => {
-  const inlineStyles = Object.entries(comp.styles)
-    .map(([k, v]) => `${camelToKebab(k)}: ${v}`)
-    .join('; ');
-
-  const styleAttr = inlineStyles ? ` style="${inlineStyles}"` : '';
-  const attrs = Object.entries(comp.attributes)
-    .map(([k, v]) => ` ${k}="${v}"`)
-    .join('');
-
-  const eventAttrs = comp.events.map(ev => {
-    if (ev.action === 'showAlert') return ` onclick="alert('${ev.payload}')"`;
-    if (ev.action === 'openUrl') return ` onclick="window.open('${ev.payload}', '_blank')"`;
-    return '';
-  }).join('');
-
-  const childrenHTML = comp.children.length > 0 
-    ? comp.children.map(renderComponentToHTML).join('') 
-    : (comp.content || '');
+  const styleAttr = styles ? ` style="${styles}"` : '';
 
   switch (comp.type) {
     case 'heading':
-      return `<h2 id="${comp.id}"${styleAttr}${attrs}${eventAttrs}>${childrenHTML}</h2>`;
+      return `<h2${styleAttr}>${comp.content || ''}</h2>`;
     case 'paragraph':
-      return `<p id="${comp.id}"${styleAttr}${attrs}${eventAttrs}>${childrenHTML}</p>`;
+      return `<p${styleAttr}>${comp.content || ''}</p>`;
     case 'button':
-      return `<button id="${comp.id}"${styleAttr}${attrs}${eventAttrs}>${childrenHTML}</button>`;
+      return `<button${styleAttr}>${comp.content || ''}</button>`;
     case 'input':
-      return `<input id="${comp.id}" type="text" value="${comp.content || ''}"${styleAttr}${attrs}${eventAttrs} />`;
-    case 'hero':
-      return `<section id="${comp.id}"${styleAttr}${attrs}${eventAttrs}>${childrenHTML}</section>`;
+      return `<input type="text" placeholder="${comp.content || ''}"${styleAttr} />`;
+    case 'image':
+      return `<img src="${comp.src || ''}" alt="${comp.content || ''}"${styleAttr} />`;
+    case 'logo':
+      return `<div${styleAttr}><span>🛡️</span> <span>${comp.content || ''}</span></div>`;
+    case 'video':
+      return `<video controls${styleAttr}><source src="${comp.src || ''}" type="video/mp4" /></video>`;
+    case 'card':
+      return `<div${styleAttr}><h3>${comp.content || ''}</h3></div>`;
     default:
-      return `<div id="${comp.id}"${styleAttr}${attrs}${eventAttrs}>${childrenHTML}</div>`;
+      const childrenHTML = comp.children?.map(generateComponentHTML).join('') || '';
+      return `<div${styleAttr}>${comp.content || ''}${childrenHTML}</div>`;
   }
 };
 
-const camelToKebab = (str: string): string => {
-  return str.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+export const generatePageHTML = (page: PageData): string => {
+  return page.components.map(generateComponentHTML).join('\n');
 };
 
-export const generateFullCode = (components: ComponentData[]): string => {
-  const bodyHTML = generateHTML(components);
+export const generateProjectHTML = (project: ProjectData): string => {
+  const page = project.pages[0];
+  if (!page) return '';
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebCraft Output</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-  </style>
+  <title>${project.name}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-${bodyHTML}
+<body class="bg-slate-50 text-slate-900 p-8">
+  ${generatePageHTML(page)}
 </body>
 </html>`;
 };
