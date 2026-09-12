@@ -8,8 +8,8 @@ export type ActiveLeftTab = 'components' | 'layers' | 'templates';
 
 export interface VisualEvent {
   id: string;
-  trigger: 'click' | 'hover';
-  action: 'showAlert' | 'openUrl' | 'navigate';
+  trigger: 'click' | 'hover' | 'onClick' | 'onHover';
+  action: 'showAlert' | 'openUrl' | 'navigate' | 'addClass' | 'toggleElement';
   payload: string;
 }
 
@@ -34,4 +34,5 @@ export interface ProjectData {
   id: string;
   name: string;
   pages: PageData[];
+  updatedAt?: string;
 }
