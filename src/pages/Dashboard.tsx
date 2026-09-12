@@ -1,70 +1,91 @@
 import React, { useState } from 'react';
 import { useEditorStore } from '../store/useEditorStore';
-import { Plus, Trash2, Copy, ExternalLink } from 'lucide-react';
+import { Plus, Folder, Trash2, Copy } from 'lucide-react';
 
-export const Dashboard: React.FC<{ onOpenProject: () => void }> = ({ onOpenProject }) => {
+export const Dashboard: React.FC<{ onOpenEditor: () => void }> = ({ onOpenEditor }) => {
   const { projects, createProject, selectProject, deleteProject, duplicateProject } = useEditorStore();
-  const [name, setName] = useState('');
+  const [newProjectName, setNewProjectName] = useState('');
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
-    createProject(name);
-    setName('');
-    onOpenProject();
+    if (!newProjectName.trim()) return;
+    createProject(newProjectName);
+    setNewProjectName('');
+    onOpenEditor();
+  };
+
+  const handleOpen = (id: string) => {
+    selectProject(id);
+    onOpenEditor();
   };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-8">
-      <div className="max-w-5xl mx-auto space-y-8">
-        <header className="flex items-center justify-between border-b border-slate-800 pb-6">
+      <div className="max-w-5xl mx-auto">
+        <header className="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
           <div>
             <h1 className="text-2xl font-bold text-sky-400">WebCraft Studio</h1>
-            <p className="text-slate-400 text-sm">Build Visually. Code Automatically.</p>
+            <p className="text-slate-400 text-sm">إدارة المشاريع والتصاميم</p>
           </div>
-
-          <form onSubmit={handleCreate} className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Project Name..."
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="bg-slate-900 border border-slate-800 px-3 py-2 rounded text-sm focus:outline-none focus:border-sky-500"
-            />
-            <button type="submit" className="bg-sky-600 hover:bg-sky-500 px-4 py-2 rounded text-sm font-semibold flex items-center gap-1">
-              <Plus size={16} /> New
-            </button>
-          </form>
         </header>
 
-        <main className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <form onSubmit={handleCreate} className="flex gap-3 mb-8">
+          <input
+            type="text"
+            value={newProjectName}
+            onChange={(e) => setNewProjectName(e.target.value)}
+            placeholder="اسم المشروع الجديد..."
+            className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-sky-500"
+          />
+          <button
+            type="submit"
+            className="bg-sky-600 hover:bg-sky-500 text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 transition"
+          >
+            <Plus size={18} />
+            مشروع جديد
+          </button>
+        </form>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {projects.map((proj) => (
-            <div key={proj.id} className="bg-slate-900 border border-slate-800 p-4 rounded-lg space-y-4 hover:border-slate-700 transition">
-              <div>
-                <h3 className="font-semibold text-lg text-slate-100">{proj.name}</h3>
-                <p className="text-xs text-slate-500">Updated: {proj.updatedAt}</p>
+            <div
+              key={proj.id}
+              className="bg-slate-900 border border-slate-800 rounded-lg p-5 hover:border-slate-700 transition relative group"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <Folder className="text-sky-400" size={24} />
+                <h3 className="font-semibold text-lg truncate">{proj.name}</h3>
               </div>
-
-              <div className="flex items-center justify-between border-t border-slate-800/80 pt-3">
+              <p className="text-xs text-slate-500 mb-4">
+                تاريخ التعديل: {proj.updatedAt || 'اليوم'}
+              </p>
+              <div className="flex items-center justify-between pt-3 border-t border-slate-800/60">
                 <button
-                  onClick={() => { selectProject(proj.id); onOpenProject(); }}
-                  className="bg-sky-600/10 text-sky-400 hover:bg-sky-600 hover:text-white px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1 transition"
+                  onClick={() => handleOpen(proj.id)}
+                  className="text-xs bg-sky-600/20 text-sky-400 hover:bg-sky-600/30 px-3 py-1.5 rounded font-medium"
                 >
-                  <ExternalLink size={12} /> Open
+                  فتح المحرر
                 </button>
-
-                <div className="flex gap-1">
-                  <button onClick={() => duplicateProject(proj.id)} className="p-1.5 text-slate-400 hover:text-white">
-                    <Copy size={14} />
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => duplicateProject(proj.id)}
+                    className="p-1.5 hover:bg-slate-800 rounded text-slate-400 hover:text-white"
+                    title="نسخ"
+                  >
+                    <Copy size={16} />
                   </button>
-                  <button onClick={() => deleteProject(proj.id)} className="p-1.5 text-slate-400 hover:text-red-400">
-                    <Trash2 size={14} />
+                  <button
+                    onClick={() => deleteProject(proj.id)}
+                    className="p-1.5 hover:bg-slate-800 rounded text-red-400 hover:text-red-300"
+                    title="حذف"
+                  >
+                    <Trash2 size={16} />
                   </button>
                 </div>
               </div>
             </div>
           ))}
-        </main>
+        </div>
       </div>
     </div>
   );
