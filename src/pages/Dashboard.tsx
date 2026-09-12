@@ -6,10 +6,10 @@ export const Dashboard: React.FC<{ onOpenEditor: () => void }> = ({ onOpenEditor
   const { projects, createProject, selectProject, deleteProject, duplicateProject } = useEditorStore();
   const [newProjectName, setNewProjectName] = useState('');
 
-  const handleCreate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newProjectName.trim()) return;
-    createProject(newProjectName);
+  const handleCreate = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const name = newProjectName.trim() || 'مشروع جديد';
+    createProject(name);
     setNewProjectName('');
     onOpenEditor();
   };
@@ -38,8 +38,9 @@ export const Dashboard: React.FC<{ onOpenEditor: () => void }> = ({ onOpenEditor
             className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-sky-500"
           />
           <button
-            type="submit"
-            className="bg-sky-600 hover:bg-sky-500 text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 transition"
+            type="button"
+            onClick={() => handleCreate()}
+            className="bg-sky-600 hover:bg-sky-500 text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 transition cursor-pointer"
           >
             <Plus size={18} />
             مشروع جديد
