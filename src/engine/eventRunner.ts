@@ -1,28 +1,23 @@
 import { VisualEvent } from '../types';
 
-export const executeVisualEvent = (event: VisualEvent) => {
+export const runVisualEvent = (event: VisualEvent) => {
   switch (event.action) {
     case 'showAlert':
-      alert(event.payload || 'Action triggered!');
+      alert(event.payload);
       break;
-
     case 'openUrl':
-      if (event.payload) {
-        window.open(event.payload, '_blank');
-      }
+      window.open(event.payload, '_blank');
       break;
-
+    case 'navigate':
+      window.location.href = event.payload;
+      break;
     case 'addClass':
-      if (event.payload) {
-        console.log(`[Event Engine] Added class: ${event.payload}`);
-      }
+      console.log('Add class action triggered:', event.payload);
       break;
-
     case 'toggleElement':
-      console.log(`[Event Engine] Toggled element: ${event.payload}`);
+      console.log('Toggle element action triggered:', event.payload);
       break;
-
     default:
-      console.warn(`[Event Engine] Unhandled event action: ${event.action}`);
+      console.log('Unknown event action:', event);
   }
 };
