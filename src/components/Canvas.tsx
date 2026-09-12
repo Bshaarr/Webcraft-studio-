@@ -9,9 +9,23 @@ export const Canvas: React.FC = () => {
   const activePage = currentProject?.pages.find((p) => p.id === activePageId) || currentProject?.pages[0];
   const components = activePage?.components || [];
 
-  const handleComponentClick = (e: React.MouseEvent, id: string) => {
+  const handleComponentClick = (e: React.MouseEvent, comp: ComponentData) => {
     e.stopPropagation();
-    if (!isPreviewMode) setSelectedComponent(id);
+    if (!isPreviewMode) {
+      setSelectedComponent(comp.id);
+      return;
+    }
+
+    // تنفيذ الأحداث في وضع المعاينة
+    if (comp.events?.length) {
+      comp.events.forEach((ev) => {
+        if (ev.action === 'openUrl' && ev.payload) {
+          window.open(ev.payload.startsWith('http') ? ev.payload : `https://${ev.payload}`, '_blank');
+        } else if (ev.action === 'showAlert') {
+          alert(ev.payload);
+        }
+      });
+    }
   };
 
   const handleDoubleClick = (e: React.MouseEvent, id: string) => {
@@ -35,27 +49,12 @@ export const Canvas: React.FC = () => {
           isSelected ? 'outline outline-2 outline-sky-500 outline-offset-2' : 'hover:outline hover:outline-1 hover:outline-sky-300'
         }`;
 
-    const executeEvents = () => {
-      if (!isPreviewMode) return;
-      comp.events?.forEach((ev) => {
-        if (ev.trigger === 'click' || (ev.trigger as string) === 'onClick') {
-          if (ev.action === 'showAlert') alert(ev.payload);
-          if (ev.action === 'openUrl') window.open(ev.payload, '_blank');
-        }
-      });
-    };
-
-    const handleClick = (e: React.MouseEvent) => {
-      handleComponentClick(e, comp.id);
-      executeEvents();
-    };
-
     switch (comp.type) {
       case 'heading':
         return (
           <h2
             key={comp.id}
-            onClick={handleClick}
+            onClick={(e) => handleComponentClick(e, comp)}
             onDoubleClick={(e) => handleDoubleClick(e, comp.id)}
             style={style}
             className={baseClasses}
@@ -71,7 +70,7 @@ export const Canvas: React.FC = () => {
         return (
           <p
             key={comp.id}
-            onClick={handleClick}
+            onClick={(e) => handleComponentClick(e, comp)}
             onDoubleClick={(e) => handleDoubleClick(e, comp.id)}
             style={style}
             className={baseClasses}
@@ -87,7 +86,7 @@ export const Canvas: React.FC = () => {
         return (
           <button
             key={comp.id}
-            onClick={handleClick}
+            onClick={(e) => handleComponentClick(e, comp)}
             onDoubleClick={(e) => handleDoubleClick(e, comp.id)}
             style={style}
             className={baseClasses}
@@ -103,7 +102,7 @@ export const Canvas: React.FC = () => {
         return (
           <div
             key={comp.id}
-            onClick={handleClick}
+            onClick={(e) => handleComponentClick(e, comp)}
             onDoubleClick={(e) => handleDoubleClick(e, comp.id)}
             style={style}
             className={`font-bold flex items-center gap-2 ${baseClasses}`}
@@ -120,7 +119,7 @@ export const Canvas: React.FC = () => {
         return (
           <img
             key={comp.id}
-            onClick={handleClick}
+            onClick={(e) => handleComponentClick(e, comp)}
             src={comp.src || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop'}
             alt={comp.content || 'صورة'}
             style={style}
@@ -130,31 +129,15 @@ export const Canvas: React.FC = () => {
 
       case 'video':
         return (
-          <video key={comp.id} onClick={handleClick} controls style={style} className={baseClasses}>
+          <video key={comp.id} onClick={(e) => handleComponentClick(e, comp)} controls style={style} className={baseClasses}>
             <source src={comp.src || 'https://www.w3schools.com/html/mov_bbb.mp4'} type="video/mp4" />
           </video>
         );
 
-      case 'card':
-        return (
-          <div key={comp.id} onClick={handleClick} style={style} className={`p-4 border rounded-lg bg-white shadow-sm ${baseClasses}`}>
-            <h3
-              className="font-bold text-lg mb-2"
-              contentEditable={isEditing}
-              suppressContentEditableWarning
-              onBlur={(e) => handleContentBlur(comp.id, e.currentTarget.textContent || '')}
-            >
-              {comp.content || 'عنوان البطاقة'}
-            </h3>
-            <p className="text-sm text-slate-500">هذه بطاقة تفاعلية توفر إمكانية ترتيب العناصر بسهولة.</p>
-          </div>
-        );
-
       default:
         return (
-          <div key={comp.id} onClick={handleClick} style={style} className={baseClasses}>
+          <div key={comp.id} onClick={(e) => handleComponentClick(e, comp)} style={style} className={baseClasses}>
             {comp.content}
-            {comp.children?.map((child) => renderComponent(child))}
           </div>
         );
     }
