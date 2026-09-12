@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEditorStore } from '../store/useEditorStore';
-import { Trash2, Link as LinkIcon, Palette } from 'lucide-react';
+import { Trash2, Link as LinkIcon, Palette, ExternalLink } from 'lucide-react';
 
 export const SidebarRight: React.FC = () => {
   const { currentProject, activePageId, selectedComponentId, updateComponent, deleteComponent } = useEditorStore();
@@ -22,11 +22,35 @@ export const SidebarRight: React.FC = () => {
 
   if (!selectedComp) {
     return (
-      <aside className="w-72 bg-slate-900 border-l border-slate-800 p-4 text-slate-400 text-xs flex items-center justify-center text-center">
-        حدد أي عنصر داخل مساحة العمل لتعديل الخصائص والألوان.
+      <aside className="w-72 bg-slate-900 border-l border-slate-800 p-4 text-slate-400 text-xs flex flex-col justify-between h-full">
+        <div className="flex items-center justify-center h-full text-center">
+          حدد أي عنصر داخل مساحة العمل لتعديل الخصائص والألوان.
+        </div>
+        
+        {/* معلومات المطور ثابتة في الجانب */}
+        <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg text-slate-300 space-y-1">
+          <p className="font-semibold text-sky-400">تطوير: المهندس بشار عنيزان</p>
+          <p className="text-[11px] text-slate-400">هاتف: 0930971491</p>
+          <p className="text-[11px] text-slate-400">البريد: bsharabomorad0@gmail.com</p>
+        </div>
       </aside>
     );
   }
+
+  const handleUrlChange = (newUrl: string) => {
+    const existingEvents = selectedComp.events || [];
+    const otherEvents = existingEvents.filter((ev: any) => ev.action !== 'openUrl');
+    
+    if (newUrl.trim()) {
+      updateComponent(selectedComp.id, {
+        events: [...otherEvents, { id: 'evt-url', trigger: 'click', action: 'openUrl', payload: newUrl }]
+      });
+    } else {
+      updateComponent(selectedComp.id, { events: otherEvents });
+    }
+  };
+
+  const currentUrl = selectedComp.events?.find((ev: any) => ev.action === 'openUrl')?.payload || '';
 
   return (
     <aside className="w-72 bg-slate-900 border-l border-slate-800 flex flex-col h-full text-slate-300 select-none text-xs">
@@ -52,16 +76,24 @@ export const SidebarRight: React.FC = () => {
           />
         </div>
 
-        {(selectedComp.type === 'image' || selectedComp.type === 'video') && (
+        {/* خيار إدخال الرابط للزر والوسائط */}
+        {(selectedComp.type === 'button' || selectedComp.type === 'image' || selectedComp.type === 'video') && (
           <div>
             <label className="block text-slate-400 mb-1 flex items-center gap-1">
-              <LinkIcon size={12} /> رابط المصدر (URL)
+              <ExternalLink size={12} className="text-sky-400" /> رابط التحويل (URL)
             </label>
             <input
               type="text"
-              value={selectedComp.src || ''}
-              onChange={(e) => updateComponent(selectedComp.id, { src: e.target.value })}
-              className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white focus:outline-none focus:border-sky-500"
+              placeholder="https://example.com"
+              value={selectedComp.type === 'button' ? currentUrl : selectedComp.src || ''}
+              onChange={(e) => {
+                if (selectedComp.type === 'button') {
+                  handleUrlChange(e.target.value);
+                } else {
+                  updateComponent(selectedComp.id, { src: e.target.value });
+                }
+              }}
+              className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white focus:outline-none focus:border-sky-500 font-mono text-[11px]"
             />
           </div>
         )}
@@ -98,7 +130,7 @@ export const SidebarRight: React.FC = () => {
             type="text"
             value={selectedComp.styles?.fontSize || ''}
             onChange={(e) => updateComponent(selectedComp.id, { styles: { fontSize: e.target.value } })}
-            placeholder="مثال: 20px"
+            placeholder="مثال: 16px"
             className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white focus:outline-none focus:border-sky-500"
           />
         </div>
