@@ -1,9 +1,9 @@
 import React from 'react';
 import { useEditorStore } from '../store/useEditorStore';
-import { Monitor, Tablet, Smartphone, Eye, Home, Code, Phone, Facebook, Mail } from 'lucide-react';
+import { Monitor, Tablet, Smartphone, Eye, Home, Code, Phone, Facebook, Mail, FileCode } from 'lucide-react';
 
 export const Navbar: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHome }) => {
-  const { currentProject, viewMode, setViewMode, isPreviewMode, setIsPreviewMode } = useEditorStore();
+  const { currentProject, viewMode, setViewMode, isPreviewMode, setIsPreviewMode, showCodePanel, setShowCodePanel } = useEditorStore();
 
   return (
     <header className="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 text-slate-300 select-none z-10">
@@ -22,7 +22,7 @@ export const Navbar: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHom
         </div>
       </div>
 
-      {/* معلومات المطور بشار عنيزان الظاهرة بوضوح */}
+      {/* معلومات المطور */}
       <div className="flex items-center gap-3 text-xs bg-slate-950 px-3 py-1 rounded-full border border-sky-500/30">
         <span className="text-slate-300">المطور: <strong className="text-sky-400 font-bold">بشار عنيزان</strong></span>
         <a href="tel:0930971491" className="flex items-center gap-1 text-slate-400 hover:text-sky-400 transition" title="اتصال">
@@ -60,6 +60,17 @@ export const Navbar: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHom
             <Smartphone size={16} />
           </button>
         </div>
+
+        {/* زر إظهار الكود البرمجي */}
+        <button
+          onClick={() => setShowCodePanel(!showCodePanel)}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+            showCodePanel ? 'bg-sky-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+          }`}
+        >
+          <FileCode size={16} />
+          <span>{showCodePanel ? 'إخفاء الكود' : 'عرض الكود'}</span>
+        </button>
 
         <button
           onClick={() => setIsPreviewMode(!isPreviewMode)}
