@@ -3,14 +3,14 @@ import { Dashboard } from './pages/Dashboard';
 import { Editor } from './pages/Editor';
 
 export const App: React.FC = () => {
-  const [currentScreen, setCurrentScreen] = useState<'dashboard' | 'editor'>('dashboard');
+  const [currentPage, setCurrentPage] = useState<'dashboard' | 'editor'>('dashboard');
 
   return (
-    <div className="w-full h-full">
-      {currentScreen === 'dashboard' ? (
-        <Dashboard onOpenProject={() => setCurrentScreen('editor')} />
+    <div className="w-full h-screen overflow-hidden bg-slate-950 text-slate-100">
+      {currentPage === 'dashboard' ? (
+        <Dashboard onOpenEditor={() => setCurrentPage('editor')} />
       ) : (
-        <Editor onNavigateHome={() => setCurrentScreen('dashboard')} />
+        <Editor onNavigateHome={() => setCurrentPage('dashboard')} />
       )}
     </div>
   );
