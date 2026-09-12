@@ -1,10 +1,20 @@
-export type ComponentType = 'heading' | 'paragraph' | 'button' | 'input' | 'hero' | 'container';
+export type ComponentType =
+  | 'heading'
+  | 'paragraph'
+  | 'button'
+  | 'input'
+  | 'image'
+  | 'logo'
+  | 'video'
+  | 'card'
+  | 'container'
+  | 'divider';
 
 export type ViewMode = 'desktop' | 'tablet' | 'mobile';
 
 export type ActiveTab = 'visual' | 'code' | 'layers' | 'components' | 'styles';
 
-export type ActiveLeftTab = 'components' | 'layers' | 'templates';
+export type ActiveLeftTab = 'components' | 'templates' | 'layers';
 
 export interface VisualEvent {
   id: string;
@@ -22,6 +32,7 @@ export interface ComponentData {
   events: VisualEvent[];
   children: ComponentData[];
   content?: string;
+  src?: string;
 }
 
 export interface PageData {
