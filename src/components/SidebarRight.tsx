@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEditorStore } from '../store/useEditorStore';
-import { Trash2, Link as LinkIcon, Palette, ExternalLink } from 'lucide-react';
+import { Trash2, Palette, ExternalLink } from 'lucide-react';
 
 export const SidebarRight: React.FC = () => {
   const { currentProject, activePageId, selectedComponentId, updateComponent, deleteComponent } = useEditorStore();
@@ -27,7 +27,7 @@ export const SidebarRight: React.FC = () => {
           حدد أي عنصر داخل مساحة العمل لتعديل الخصائص والألوان.
         </div>
         
-        {/* معلومات المطور ثابتة في الجانب */}
+        {/* معلومات المطور */}
         <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg text-slate-300 space-y-1">
           <p className="font-semibold text-sky-400">تطوير: المهندس بشار عنيزان</p>
           <p className="text-[11px] text-slate-400">هاتف: 0930971491</p>
