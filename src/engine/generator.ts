@@ -6,7 +6,7 @@ export const generateHTML = (components: ComponentData[]): string => {
 
 const renderComponentToHTML = (comp: ComponentData): string => {
   const inlineStyles = Object.entries(comp.styles)
-    .map(([k, v]) => `${camelToKebab(k)}:${v}`)
+    .map(([k, v]) => `${camelToKebab(k)}: ${v}`)
     .join('; ');
 
   const styleAttr = inlineStyles ? ` style="${inlineStyles}"` : '';
@@ -20,7 +20,9 @@ const renderComponentToHTML = (comp: ComponentData): string => {
     return '';
   }).join('');
 
-  const childrenHTML = comp.children.length > 0 ? comp.children.map(renderComponentToHTML).join('') : (comp.content || '');
+  const childrenHTML = comp.children.length > 0 
+    ? comp.children.map(renderComponentToHTML).join('') 
+    : (comp.content || '');
 
   switch (comp.type) {
     case 'heading':
@@ -30,7 +32,7 @@ const renderComponentToHTML = (comp: ComponentData): string => {
     case 'button':
       return `<button id="${comp.id}"${styleAttr}${attrs}${eventAttrs}>${childrenHTML}</button>`;
     case 'input':
-      return `<input id="${comp.id}" type="text" value="${comp.content \vert{}\vert{} ''}"${styleAttr}${attrs}${eventAttrs} />`;
+      return `<input id="${comp.id}" type="text" value="${comp.content || ''}"${styleAttr}${attrs}${eventAttrs} />`;
     case 'hero':
       return `<section id="${comp.id}"${styleAttr}${attrs}${eventAttrs}>${childrenHTML}</section>`;
     default:
@@ -38,9 +40,11 @@ const renderComponentToHTML = (comp: ComponentData): string => {
   }
 };
 
-const camelToKebab = (str: string) => str.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+const camelToKebab = (str: string): string => {
+  return str.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+};
 
-export const generateFullCode = (components: ComponentData[]) => {
+export const generateFullCode = (components: ComponentData[]): string => {
   const bodyHTML = generateHTML(components);
   return `<!DOCTYPE html>
 <html lang="en">
