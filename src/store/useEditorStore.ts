@@ -10,6 +10,7 @@ interface EditorState {
   viewMode: ViewMode;
   activeLeftTab: ActiveLeftTab;
   isPreviewMode: boolean;
+  showCodePanel: boolean;
 
   createProject: (name: string) => void;
   selectProject: (id: string) => void;
@@ -19,8 +20,9 @@ interface EditorState {
   setViewMode: (mode: ViewMode) => void;
   setActiveLeftTab: (tab: ActiveLeftTab) => void;
   setIsPreviewMode: (status: boolean) => void;
+  setShowCodePanel: (status: boolean) => void;
 
-  addComponent: (parentId: string | null, type: string) => void;
+  addComponent: (_parentId: string | null, type: string) => void;
   updateComponent: (id: string, updates: Partial<ComponentData>) => void;
   deleteComponent: (id: string) => void;
   loadTemplate: (templateType: 'landing' | 'portfolio') => void;
@@ -80,6 +82,7 @@ export const useEditorStore = create<EditorState>()(
       viewMode: 'desktop',
       activeLeftTab: 'components',
       isPreviewMode: false,
+      showCodePanel: false,
 
       createProject: (name) => {
         const newProj: ProjectData = {
@@ -130,9 +133,9 @@ export const useEditorStore = create<EditorState>()(
       setViewMode: (mode) => set({ viewMode: mode }),
       setActiveLeftTab: (tab) => set({ activeLeftTab: tab }),
       setIsPreviewMode: (status) => set({ isPreviewMode: status }),
+      setShowCodePanel: (status) => set({ showCodePanel: status }),
 
       addComponent: (_parentId, type) => {
-
         set((state) => {
           if (!state.currentProject) return state;
           const newComp: ComponentData = {
