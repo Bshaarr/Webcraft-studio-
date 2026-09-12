@@ -6,6 +6,7 @@ interface EditorState {
   selectedComponentId: string | null;
   viewMode: ViewMode;
   activeBottomTab: ActiveTab;
+  activePageId: string;
   history: ProjectData[];
   historyIndex: number;
 
@@ -14,6 +15,7 @@ interface EditorState {
   setSelectedComponentId: (id: string | null) => void;
   setViewMode: (mode: ViewMode) => void;
   setActiveBottomTab: (tab: ActiveTab) => void;
+  setActivePageId: (pageId: string) => void;
   
   addComponent: (parentId: string | null, type: string) => void;
   updateComponent: (id: string, updates: Partial<ComponentData>) => void;
@@ -49,6 +51,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setSelectedComponentId: (id) => set({ selectedComponentId: id }),
   setViewMode: (mode) => set({ viewMode: mode }),
   setActiveBottomTab: (tab) => set({ activeBottomTab: tab }),
+  setActivePageId: (pageId) => set({ activePageId: pageId }),
 
   saveCurrentState: () => {
     const { currentProject, history, historyIndex } = get();
@@ -62,10 +65,10 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   },
 
   addComponent: (parentId: string | null, type: string) => {
-    const { currentProject } = get();
+    const { currentProject, activePageId } = get();
     if (!currentProject) return;
 
-    const activePageId = currentProject.pages[0]?.id || 'page-1';
+    const targetPageId = activePageId || currentProject.pages[0]?.id || 'page-1';
 
     const newComp: ComponentData = {
       id: `comp-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
@@ -98,7 +101,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     };
 
     const updatedPages = currentProject.pages.map(page => {
-      if (page.id === activePageId) {
+      if (page.id === targetPageId) {
         if (!parentId) {
           return { ...page, components: [...page.components, newComp] };
         }
