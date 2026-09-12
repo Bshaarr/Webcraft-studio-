@@ -158,20 +158,57 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     set({ history: newHistory, historyIndex: newHistory.length - 1 });
   },
 
-  addComponent: (parentId, type) => {
+    addComponent: (parentId, type) => {
     const { currentProject, activePageId } = get();
     if (!currentProject) return;
 
     const newComp: ComponentData = {
-      id: `comp-${Date.now()}`,
+      id: `comp-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
       type,
       name: type.charAt(0).toUpperCase() + type.slice(1),
-      styles: { padding: '12px', margin: '4px' },
+      styles: { 
+        padding: '12px', 
+        margin: '8px 0',
+        backgroundColor: type === 'button' ? '#0284c7' : type === 'container' ? '#f8fafc' : 'transparent',
+        color: type === 'button' ? '#ffffff' : '#0f172a',
+        borderRadius: '6px',
+        border: type === 'container' ? '1px solid #e2e8f0' : 'none'
+      },
       attributes: {},
       events: [],
       children: [],
-      content: type === 'button' ? 'Click Me' : type === 'heading' ? 'New Heading' : type === 'paragraph' ? 'Sample Text' : ''
+      content: type === 'button' ? 'New Button' : type === 'heading' ? 'New Heading' : type === 'paragraph' ? 'Sample Text Paragraph' : type === 'input' ? 'Placeholder Text' : ''
     };
+
+    const updateRecursive = (list: ComponentData[]): ComponentData[] => {
+      return list.map(item => {
+        if (item.id === parentId) {
+          return { ...item, children: [...item.children, newComp] };
+        }
+        if (item.children && item.children.length > 0) {
+          return { ...item, children: updateRecursive(item.children) };
+        }
+        return item;
+      });
+    };
+
+    const updatedPages = currentProject.pages.map(page => {
+      if (page.id === activePageId) {
+        // إذا لم يتم تحديد عنصر أب، أضفه كعنصر رئيسي في الصفحة مباشرة
+        if (!parentId) {
+          return { ...page, components: [...page.components, newComp] };
+        }
+        // إذا تم تحديد عنصر أب (مثل Container)، أضفه داخله
+        return { ...page, components: updateRecursive(page.components) };
+      }
+      return page;
+    });
+
+    const updatedProj = { ...currentProject, pages: updatedPages };
+    set({ currentProject: updatedProj, selectedComponentId: newComp.id });
+    get().saveCurrentState();
+  },
+
 
     const updateRecursive = (list: ComponentData[]): ComponentData[] => {
       return list.map(item => {
