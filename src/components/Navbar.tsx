@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEditorStore } from '../store/useEditorStore';
-import { Monitor, Tablet, Smartphone, Undo, Redo, Save, Download, Play, Code } from 'lucide-react';
+import { Monitor, Tablet, Smartphone, Undo, Redo, Download, Code } from 'lucide-react';
 import JSZip from 'jszip';
 import { generateFullCode } from '../engine/generator';
 
@@ -57,10 +57,10 @@ export const Navbar: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHom
 
       {/* Action Controls */}
       <div className="flex items-center gap-2">
-        <button onClick={undo} className="p-1.5 hover:bg-slate-800 rounded text-slate-300">
+        <button onClick={undo} className="p-1.5 hover:bg-slate-800 rounded text-slate-300" title="Undo">
           <Undo size={16} />
         </button>
-        <button onClick={redo} className="p-1.5 hover:bg-slate-800 rounded text-slate-300">
+        <button onClick={redo} className="p-1.5 hover:bg-slate-800 rounded text-slate-300" title="Redo">
           <Redo size={16} />
         </button>
 
