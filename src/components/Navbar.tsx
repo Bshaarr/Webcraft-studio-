@@ -6,8 +6,8 @@ export const Navbar: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHom
   const { currentProject, viewMode, setViewMode, isPreviewMode, setIsPreviewMode } = useEditorStore();
 
   return (
-    <header className="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 text-slate-300 select-none">
-      <div className="flex items-center gap-4">
+    <header className="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 text-slate-300 select-none z-10">
+      <div className="flex items-center gap-3">
         <button
           onClick={onNavigateHome}
           className="flex items-center gap-2 hover:text-white bg-slate-800 px-3 py-1.5 rounded-md text-xs font-medium transition"
@@ -22,17 +22,17 @@ export const Navbar: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHom
         </div>
       </div>
 
-      {/* معلن اسم المطور بشار عنيزان */}
-      <div className="hidden lg:flex items-center gap-4 text-xs bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700/60">
-        <span className="text-slate-400">تطوير: <strong className="text-sky-400">بشار عنيزان</strong></span>
-        <a href="tel:0930971491" className="flex items-center gap-1 hover:text-sky-400 transition" title="اتصال">
-          <Phone size={12} /> 0930971491
+      {/* معلومات المطور بشار عنيزان الظاهرة بوضوح */}
+      <div className="flex items-center gap-3 text-xs bg-slate-950 px-3 py-1 rounded-full border border-sky-500/30">
+        <span className="text-slate-300">المطور: <strong className="text-sky-400 font-bold">بشار عنيزان</strong></span>
+        <a href="tel:0930971491" className="flex items-center gap-1 text-slate-400 hover:text-sky-400 transition" title="اتصال">
+          <Phone size={12} /> <span className="hidden sm:inline">0930971491</span>
         </a>
-        <a href="mailto:bsharabomorad0@gmail.com" className="flex items-center gap-1 hover:text-sky-400 transition" title="البريد الإلكتروني">
-          <Mail size={12} /> البريد
+        <a href="mailto:bsharabomorad0@gmail.com" className="hidden md:flex items-center gap-1 text-slate-400 hover:text-sky-400 transition" title="البريد">
+          <Mail size={12} />
         </a>
-        <a href="https://www.facebook.com/share/1BRkWgTJ1T/" target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:text-sky-400 transition" title="فيسبوك">
-          <Facebook size={12} /> فيسبوك
+        <a href="https://www.facebook.com/share/1BRkWgTJ1T/" target="_blank" rel="noreferrer" className="flex items-center gap-1 text-slate-400 hover:text-sky-400 transition" title="فيسبوك">
+          <Facebook size={12} />
         </a>
       </div>
 
@@ -41,21 +41,21 @@ export const Navbar: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHom
           <button
             onClick={() => setViewMode('desktop')}
             className={`p-1.5 rounded ${viewMode === 'desktop' ? 'bg-sky-600 text-white' : 'hover:text-white'}`}
-            title="عرض الحاسوب"
+            title="حاسوب"
           >
             <Monitor size={16} />
           </button>
           <button
             onClick={() => setViewMode('tablet')}
             className={`p-1.5 rounded ${viewMode === 'tablet' ? 'bg-sky-600 text-white' : 'hover:text-white'}`}
-            title="عرض اللوح الذكي"
+            title="تابلت"
           >
             <Tablet size={16} />
           </button>
           <button
             onClick={() => setViewMode('mobile')}
             className={`p-1.5 rounded ${viewMode === 'mobile' ? 'bg-sky-600 text-white' : 'hover:text-white'}`}
-            title="عرض الهاتف"
+            title="هاتف"
           >
             <Smartphone size={16} />
           </button>
@@ -68,7 +68,7 @@ export const Navbar: React.FC<{ onNavigateHome: () => void }> = ({ onNavigateHom
           }`}
         >
           <Eye size={16} />
-          <span>{isPreviewMode ? 'إغلاق المعاينة' : 'معاينة المباشرة'}</span>
+          <span>{isPreviewMode ? 'إلغاء المعاينة' : 'المعاينة المباشرة'}</span>
         </button>
       </div>
     </header>
